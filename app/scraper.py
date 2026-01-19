@@ -152,7 +152,13 @@ def scrape_profile_logic(url, session_id="default"):
     
     try:
         driver = setup_driver()
-        load_cookies(driver, session_id)
+        if not load_cookies(driver, session_id):
+            return {
+                "url": url,
+                "status": "error", 
+                "error": "No cookies found. Please Go to 'Configuration' and import LinkedIn cookies first.",
+                "timestamp": datetime.now().isoformat()
+            }
         
         # Initialize Person with scrape=True
         person = Person(
