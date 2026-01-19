@@ -23,7 +23,7 @@ def setup_driver():
     
     # Headless mode only if requested (default True for Docker, likely False for local debug)
     if os.getenv("HEADLESS", "true").lower() == "true":
-        opts.add_argument("--headless")
+        opts.add_argument("--headless=new") # Modern headless (more stable)
         
     opts.add_argument("--no-sandbox")
     opts.add_argument("--disable-dev-shm-usage")
@@ -171,13 +171,17 @@ def scrape_profile_logic(url, session_id="default"):
 
         # Initialize Person with scrape=True
         print("DEBUG: Initializing Person object (Starting scrape)...")
-        person = Person(
-            linkedin_url=url,
-            driver=driver,
-            scrape=True,
-            close_on_complete=False 
-        )
-        print("DEBUG: Person object created. Scrape finished?")
+        try:
+            person = Person(
+                linkedin_url=url,
+                driver=driver,
+                scrape=True,
+                close_on_complete=False 
+            )
+            print("DEBUG: Person object created. Scrape finished?")
+        except Exception as p_err:
+             print(f"DEBUG: Person/Scrape FAILED: {p_err}")
+             raise p_err
         
         save_cookies(driver, session_id)
         
