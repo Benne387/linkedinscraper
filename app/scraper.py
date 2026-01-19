@@ -181,6 +181,23 @@ def scrape_profile_logic(url, session_id="default"):
             print("DEBUG: Person object created. Scrape finished?")
         except Exception as p_err:
              print(f"DEBUG: Person/Scrape FAILED: {p_err}")
+             try:
+                 print(f"DEBUG: Last URL: {driver.current_url}")
+                 print(f"DEBUG: Page Title: {driver.title}")
+                 
+                 # Save Screenshot for diagnosis
+                 screenshot_path = os.path.join(SCRAPED_DATA_DIR, "error_screenshot.png")
+                 driver.save_screenshot(screenshot_path)
+                 print(f"DEBUG: Saved error screenshot to {screenshot_path}")
+                 
+                 # Save Page Source
+                 source_path = os.path.join(SCRAPED_DATA_DIR, "error_page.html")
+                 with open(source_path, "w", encoding="utf-8") as f:
+                     f.write(driver.page_source)
+                 print(f"DEBUG: Saved error HTML to {source_path}")
+             except Exception as shot_err:
+                 print(f"DEBUG: Could not capture screenshot/source: {shot_err}")
+                 
              raise p_err
         
         save_cookies(driver, session_id)
