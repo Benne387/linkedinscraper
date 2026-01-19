@@ -1,5 +1,5 @@
 # Base Image
-FROM python:3.11-slim
+FROM python:3.11-slim-bookworm
 
 # Environment Variables
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y \
 
 # Install Google Chrome (Direct Deb Download - Modern Way)
 RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
+    && apt-get update \
     && apt-get install -y ./google-chrome-stable_current_amd64.deb \
     && rm google-chrome-stable_current_amd64.deb \
     && rm -rf /var/lib/apt/lists/*
