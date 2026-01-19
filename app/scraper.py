@@ -155,7 +155,9 @@ def scrape_profile_logic(url, session_id="default"):
     }
     
     try:
+        print("DEBUG: Setting up driver...")
         driver = setup_driver()
+        print("DEBUG: Driver setup complete. Loading cookies...")
         load_cookies(driver, session_id)
         
         # Force English Locale via URL (Overrides account language settings)
@@ -165,15 +167,17 @@ def scrape_profile_logic(url, session_id="default"):
             url += "?locale=en_US"
             
         print(f"DEBUG: Scraping URL: {url}") # Show in Docker logs
-        data["url"] = url # Return actual used URL to frontend
+        data["url"] = url 
 
         # Initialize Person with scrape=True
+        print("DEBUG: Initializing Person object (Starting scrape)...")
         person = Person(
             linkedin_url=url,
             driver=driver,
             scrape=True,
             close_on_complete=False 
         )
+        print("DEBUG: Person object created. Scrape finished?")
         
         save_cookies(driver, session_id)
         
