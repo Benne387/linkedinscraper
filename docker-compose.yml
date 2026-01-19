@@ -13,4 +13,4 @@ services:
       - BASIC_AUTH_USERNAME=admin
       - BASIC_AUTH_PASSWORD=changeme_securely
       - HEADLESS=true
-    shm_size: '2gb' # Crucial for Chrome in Docker
+    shm_size: '512mb' # Use /tmp instead (via disable-dev-shm-usage) to save RAM
