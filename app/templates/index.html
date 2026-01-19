@@ -203,16 +203,26 @@
                     })
                 });
 
+                if (!response.ok) {
+                    const text = await response.text();
+                    try {
+                        const json = JSON.parse(text);
+                        throw new Error(json.error || `Server Error: ${response.status}`);
+                    } catch (e) {
+                        // Likely HTML (401/404/500)
+                        throw new Error(`Server connection failed (${response.status}). Are you logged in?`);
+                    }
+                }
+
                 const data = await response.json();
                 currentScrapedData = data; // Store for download
 
-                if (response.ok && data.status === 'success') {
+                if (data.status === 'success') {
                     renderProfile(data);
                     actionButtons.classList.remove('hidden'); // Show download buttons
                 } else {
                     renderError(data.error || 'Unknown error occurred');
                 }
-
             } catch (error) {
                 renderError(error.message);
             } finally {
@@ -397,6 +407,8 @@
                         session_id: getClientId()
                     })
                 });
+
+                if (!response.ok) throw new Error(`Status ${response.status}`);
                 const data = await response.json();
 
                 msg.textContent = data.message;
@@ -423,6 +435,8 @@
                         session_id: getClientId()
                     })
                 });
+
+                if (!response.ok) throw new Error(`Status ${response.status}`);
                 const data = await response.json();
 
                 msg.textContent = data.message;
