@@ -36,6 +36,10 @@ def setup_driver():
     opts.add_experimental_option("excludeSwitches", ["enable-automation"])
     opts.add_experimental_option('useAutomationExtension', False)
 
+    # Force English Language (Crucial for scraping logic that relies on "Experience", "Education" etc.)
+    opts.add_argument("--lang=en-US")
+    opts.add_experimental_option('prefs', {'intl.accept_languages': 'en,en_US'})
+
     return webdriver.Chrome(
         service=Service(ChromeDriverManager().install()),
         options=opts
@@ -152,13 +156,7 @@ def scrape_profile_logic(url, session_id="default"):
     
     try:
         driver = setup_driver()
-        if not load_cookies(driver, session_id):
-            return {
-                "url": url,
-                "status": "error", 
-                "error": "No cookies found. Please Go to 'Configuration' and import LinkedIn cookies first.",
-                "timestamp": datetime.now().isoformat()
-            }
+        load_cookies(driver, session_id)
         
         # Initialize Person with scrape=True
         person = Person(
