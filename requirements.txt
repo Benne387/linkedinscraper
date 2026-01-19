@@ -1,3 +1,6 @@
+flask
 selenium
+webdriver-manager
 requests
-lxml
+linkedin-scraper
+gunicorn

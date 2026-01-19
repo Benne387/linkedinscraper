@@ -1,0 +1,123 @@
+{
+  "name": "LinkedIn Scraper - Batch",
+  "description": "Scrapte mehrere LinkedIn Profile aus einer Liste mit nur einer Authentifizierung",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "read"
+      },
+      "id": "1",
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [50, 100]
+    },
+    {
+      "parameters": {
+        "fileKey": "file",
+        "binaryPropertyName": "data"
+      },
+      "id": "2",
+      "name": "CSV Upload",
+      "type": "n8n-nodes-base.fileReadBinary",
+      "typeVersion": 1,
+      "position": [250, 100]
+    },
+    {
+      "parameters": {
+        "mode": "fromJSON",
+        "jsonString": "=null"
+      },
+      "id": "3",
+      "name": "Parse CSV",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [450, 100]
+    },
+    {
+      "parameters": {
+        "nodeOutputType": "iterator",
+        "input": "=\u003d$json.urls"
+      },
+      "id": "4",
+      "name": "For Each URL",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [650, 100]
+    },
+    {
+      "parameters": {
+        "command": "=cmd /c python scrape_n8n.py \"{{$json.url}}\""
+      },
+      "id": "5",
+      "name": "Execute Scraper",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [850, 100]
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=scraped_profiles_{{$now.toFormat('yyyy-MM-dd_HH-mm-ss')}}.json",
+        "fileContent": "=JSON.stringify($json, null, 2)"
+      },
+      "id": "6",
+      "name": "Save JSON",
+      "type": "n8n-nodes-base.fileWrite",
+      "typeVersion": 1,
+      "position": [1050, 100]
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "CSV Upload",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CSV Upload": {
+      "main": [
+        [
+          {
+            "node": "Parse CSV",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse CSV": {
+      "main": [
+        [
+          {
+            "node": "For Each URL",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "For Each URL": {
+      "main": [
+        [
+          {
+            "node": "Execute Scraper",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Scraper": {
+      "main": [
+        [
+          {
+            "node": "Save JSON",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

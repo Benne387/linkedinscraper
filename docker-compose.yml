@@ -1,0 +1,14 @@
+services:
+  scraper:
+    build: .
+    container_name: linkedin_scraper_v2
+    restart: always
+    ports:
+      - "80:5000"
+    volumes:
+      - ./linkedin_session:/app/linkedin_session
+      - ./scraped_data:/app/scraped_data
+    environment:
+      - PORT=5000
+      - HEADLESS=true
+    shm_size: '2gb' # Crucial for Chrome in Docker

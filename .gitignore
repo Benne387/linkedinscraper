@@ -13,3 +13,11 @@ scrape.py
 creds.json
 venv
 *.zip
+
+# Security / Local Data
+linkedin_session/
+scraped_data/
+cookies*.json
+*.log
+deploy_package/
+.env
