@@ -38,4 +38,4 @@ RUN mkdir -p scraped_data linkedin_session
 EXPOSE 5000
 
 # Start Command
-CMD gunicorn --bind 0.0.0.0:$PORT run:app
+CMD gunicorn --workers=1 --threads=4 --timeout 300 --bind 0.0.0.0:$PORT run:app
