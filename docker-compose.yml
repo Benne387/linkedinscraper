@@ -1,7 +1,7 @@
 services:
-  scraper:
+  scraper_app:
     build: .
-    container_name: linkedin_scraper_v3
+    container_name: linkedin_scraper_final
     restart: always
     ports:
       - "5005:5000"
