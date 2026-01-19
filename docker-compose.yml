@@ -10,5 +10,7 @@ services:
       - ./scraped_data:/app/scraped_data
     environment:
       - PORT=5000
+      - BASIC_AUTH_USERNAME=admin
+      - BASIC_AUTH_PASSWORD=changeme_securely
       - HEADLESS=true
     shm_size: '2gb' # Crucial for Chrome in Docker

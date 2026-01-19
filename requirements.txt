@@ -4,3 +4,4 @@ webdriver-manager
 requests
 linkedin-scraper
 gunicorn
+Flask-BasicAuth
