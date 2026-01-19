@@ -14,26 +14,30 @@ def health():
 
 @bp.route('/scrape', methods=['POST'])
 def scrape():
-    data = request.get_json(silent=True)
-    
-    # Handle both JSON and Form data (if extended later)
-    if not data:
-        return jsonify({"status": "error", "error": "Invalid JSON"}), 400
+    try:
+        data = request.get_json(silent=True)
         
-    url = data.get('url')
-    if not url:
-        return jsonify({"status": "error", "error": "URL required"}), 400
-    
-    # Get sessionId 
-    session_id = data.get('session_id', 'default_user')
-    
-    result = scrape_profile_logic(url, session_id=session_id)
-    
-    status_code = 200
-    if result.get("status") == "error":
-        status_code = 500
+        # Handle both JSON and Form data (if extended later)
+        if not data:
+            return jsonify({"status": "error", "error": "Invalid JSON"}), 400
+            
+        url = data.get('url')
+        if not url:
+            return jsonify({"status": "error", "error": "URL required"}), 400
         
-    return jsonify(result), status_code
+        # Get sessionId 
+        session_id = data.get('session_id', 'default_user')
+        
+        result = scrape_profile_logic(url, session_id=session_id)
+        
+        status_code = 200
+        if result.get("status") == "error":
+            status_code = 500
+            
+        return jsonify(result), status_code
+    except Exception as e:
+        current_app.logger.error(f"Unhandled Error in /scrape: {str(e)}")
+        return jsonify({"status": "error", "error": str(e)}), 500
 
 @bp.route('/scrape/batch', methods=['POST'])
 def scrape_batch():
@@ -55,26 +59,31 @@ def scrape_batch():
 
 @bp.route('/login', methods=['POST'])
 def login():
-    data = request.get_json(silent=True) or {}
-    email = data.get('email')
-    password = data.get('password')
-    
-    if not email or not password:
-        return jsonify({"status": "error", "message": "Email and password required"}), 400
+    try:
+        data = request.get_json(silent=True) or {}
+        email = data.get('email')
+        password = data.get('password')
         
-    
-    session_id = data.get('session_id', 'default_user')
-    result = login_to_linkedin(email, password, session_id)
-    return jsonify(result)
+        if not email or not password:
+            return jsonify({"status": "error", "message": "Email and password required"}), 400
+            
+        session_id = data.get('session_id', 'default_user')
+        result = login_to_linkedin(email, password, session_id)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @bp.route('/cookies', methods=['POST'])
 def upload_cookies():
-    data = request.get_json(silent=True) or {}
-    cookies = data.get('cookies') # text string
-    
-    if not cookies:
-        return jsonify({"status": "error", "message": "Cookies JSON required"}), 400
+    try:
+        data = request.get_json(silent=True) or {}
+        cookies = data.get('cookies') # text string
         
-    session_id = data.get('session_id', 'default_user')
-    result = save_manual_cookies(cookies, session_id)
-    return jsonify(result)
+        if not cookies:
+            return jsonify({"status": "error", "message": "Cookies JSON required"}), 400
+            
+        session_id = data.get('session_id', 'default_user')
+        result = save_manual_cookies(cookies, session_id)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
