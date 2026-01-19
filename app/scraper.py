@@ -160,12 +160,6 @@ def scrape_profile_logic(url, session_id="default"):
         print("DEBUG: Driver setup complete. Loading cookies...")
         load_cookies(driver, session_id)
         
-        # Force English Locale via URL (Overrides account language settings)
-        if "?" in url:
-            url += "&locale=en_US"
-        else:
-            url += "?locale=en_US"
-            
         print(f"DEBUG: Scraping URL: {url}") # Show in Docker logs
         data["url"] = url 
 
