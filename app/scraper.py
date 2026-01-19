@@ -72,6 +72,18 @@ def load_cookies(driver, session_id):
             except:
                 pass
         
+        # FORCE ENGLISH LANGUAGE COOKIE (Critical for scraper library)
+        try:
+            driver.add_cookie({
+                'name': 'lang',
+                'value': 'v=2&lang=en-us',
+                'domain': '.linkedin.com',
+                'path': '/'
+            })
+            print("DEBUG: Injected English language cookie.")
+        except Exception as e:
+            print(f"DEBUG: Failed to inject language cookie: {e}")
+
         driver.refresh()
         time.sleep(2)
         return True
