@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Google Chrome (Direct Deb Dow# Install Google Chrome (Direct Deb Download - Modern Way)
+# Install Google Chrome (Direct Deb Download - Modern Way)
 RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
     && apt-get install -y ./google-chrome-stable_current_amd64.deb \
     && rm google-chrome-stable_current_amd64.deb \
