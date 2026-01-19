@@ -172,8 +172,21 @@ def scrape_profile_logic(url, session_id="default"):
         print("DEBUG: Driver setup complete. Loading cookies...")
         load_cookies(driver, session_id)
         
-        print(f"DEBUG: Scraping URL: {url}") # Show in Docker logs
+        # WARMUP: Navigate to profile WITH locale param to force session to switch to English
+        # We don't pass this URL to Person() because it breaks sub-navigation (crashes),
+        # but visiting it once sets the session state to English for subsequent loads.
+        print("DEBUG: Warming up session with English Locale...")
+        warmup_url = url + ("&locale=en_US" if "?" in url else "?locale=en_US")
+        driver.get(warmup_url)
+        time.sleep(3)
+            
+        print(f"DEBUG: Scraping URL (Clean): {url}") # Show in Docker logs
         data["url"] = url 
+        
+        # Re-inject cookie just in case
+        try:
+             driver.add_cookie({'name': 'lang', 'value': 'v=2&lang=en-us', 'domain': '.linkedin.com', 'path': '/'})
+        except: pass 
 
         # Initialize Person with scrape=True
         print("DEBUG: Initializing Person object (Starting scrape)...")
